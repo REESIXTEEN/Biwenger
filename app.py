@@ -28,14 +28,15 @@ def compute_player_stats(fitness):
     """From a fitness array, compute recent-match statistics."""
     if not fitness:
         fitness = []
-    last_5 = fitness[-5:]
+    last_5 = fitness[-8:]
     played_5 = sum(1 for m in last_5 if isinstance(m, (int, float)))
 
     last_10 = fitness[-10:]
     pts_10 = sum(m for m in last_10 if isinstance(m, (int, float)))
 
-    all_pts = [m for m in fitness if isinstance(m, (int, float))]
-    median = statistics.median(all_pts) if all_pts else 0
+    # Median over the last 8 matches: if the player didn't play, count as 0
+    last_5_pts = [m if isinstance(m, (int, float)) else 0 for m in last_5]
+    median = statistics.median(last_5_pts) if last_5_pts else 0
 
     return played_5, pts_10, median
 
